@@ -53,7 +53,7 @@ def test_registro_inexistente_da_404(client):
 
 
 def test_listados_muestran_datos(client):
-    assert "Portátil Lenovo IdeaPad 5" in client.get("/productos/").get_data(as_text=True)
+    assert "Gamba Red Cherry (Neocaridina)" in client.get("/productos/").get_data(as_text=True)
     assert "Laura Gómez Rojas" in client.get("/ventas/").get_data(as_text=True)
 
 
@@ -78,7 +78,7 @@ def test_crud_categorias(client):
 
 
 def test_categoria_duplicada_y_vacia(client):
-    r = client.post("/categorias/nuevo", data={"nombre_categoria": "Computadores"})
+    r = client.post("/categorias/nuevo", data={"nombre_categoria": "Gambas Neocaridina"})
     assert "Ya existe un registro" in r.get_data(as_text=True)
     r = client.post("/categorias/nuevo", data={"nombre_categoria": "  "})
     assert "es obligatorio" in r.get_data(as_text=True)
