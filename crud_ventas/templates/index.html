@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="store-banner mb-4">
+  <div class="row align-items-center">
+    <div class="col-lg-8">
+      <span class="badge bg-info text-dark fw-semibold mb-2">TIENDA ESPECIALIZADA · NEIVA</span>
+      <h1 class="display-6 fw-bold mb-2">AquaExotic · Invertebrados & Aquascaping</h1>
+      <p class="lead fs-6 text-light opacity-75 mb-3">Control centralizado de gambas de agua dulce, caracoles ornamentales, plantas de bajos requerimientos y facturación en tienda.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{{ url_for('productos.listar') }}" class="btn btn-info fw-semibold px-4">
+          <i class="bi bi-box-seam me-1"></i> Ver Catálogo Vivo
+        </a>
+        <a href="{{ url_for('ventas.listar') }}" class="btn btn-outline-light px-4">
+          <i class="bi bi-plus-circle me-1"></i> Gestionar Ventas
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 mt-4 mt-lg-0">
+      <div class="bg-dark bg-opacity-75 border border-secondary rounded-4 p-4 text-center">
+        <div class="text-info small fw-bold text-uppercase mb-1">Balance Total Vendido</div>
+        <div class="fs-2 fw-extrabold text-white">{{ c.total_ventas|pesos }}</div>
+        <div class="small text-secondary mt-1">Incluye descuentos aplicados</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% set tarjetas = [
+  ('categorias.listar', 'Categorías', 'grid', c.categorias, 'bg-primary-subtle text-primary'),
+  ('productos.listar',  'Especies y Plantas', 'droplet-fill', c.productos, 'bg-info-subtle text-info'),
+  ('clientes.listar',   'Clientes', 'people-fill', c.clientes, 'bg-success-subtle text-success'),
+  ('vendedores.listar', 'Asesores', 'person-badge-fill', c.vendedores, 'bg-warning-subtle text-warning'),
+  ('ventas.listar',     'Ventas', 'bag-check-fill', c.ventas, 'bg-danger-subtle text-danger'),
+] %}
+<div class="row g-3 mb-5">
+  {% for endpoint, label, icon, n, color_cls in tarjetas %}
+  <div class="col-6 col-md-4 col-lg">
+    <a class="stat-card p-3 h-100" href="{{ url_for(endpoint) }}">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="icon-box {{ color_cls }}">
+          <i class="bi bi-{{ icon }}"></i>
+        </div>
+        <i class="bi bi-arrow-up-right text-muted"></i>
+      </div>
+      <div class="fs-3 fw-bold">{{ n }}</div>
+      <div class="small text-secondary fw-medium">{{ label }}</div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+<h5 class="fw-bold mb-3">Líneas Principales de la Tienda</h5>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="catalog-card h-100">
+      <img src="{{ url_for('static', filename='img/gamba.jpg') }}" class="catalog-img" alt="Gambas">
+      <div class="p-3">
+        <span class="badge bg-danger-subtle text-danger mb-1">Invertebrados</span>
+        <h6 class="fw-bold mb-1">Gambas Neocaridina & Caridina</h6>
+        <p class="small text-secondary mb-0">Red Cherry, Blue Dream y Crystal Red criadas en parámetros controlados.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="catalog-card h-100">
+      <img src="{{ url_for('static', filename='img/planta.jpg') }}" class="catalog-img" alt="Plantas">
+      <div class="p-3">
+        <span class="badge bg-success-subtle text-success mb-1">Flora Acuática</span>
+        <h6 class="fw-bold mb-1">Plantas & Musgos de Aquascaping</h6>
+        <p class="small text-secondary mb-0">Ambulia, Montecarlo, Anubias y Musgo de Java libres de plagas.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="catalog-card h-100">
+      <img src="{{ url_for('static', filename='img/caracol.jpg') }}" class="catalog-img" alt="Caracoles">
+      <div class="p-3">
+        <span class="badge bg-info-subtle text-info mb-1">Equipo de Limpieza</span>
+        <h6 class="fw-bold mb-1">Caracoles Ornamentales</h6>
+        <p class="small text-secondary mb-0">Caracol Cebra Neritina y Caracol Asesino Helena para control biológico.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

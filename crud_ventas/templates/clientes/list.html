@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Clientes{% endblock %}
+{% block content %}
+{{ m.encabezado('Clientes', 'people', url_for('clientes.crear'), items|length) }}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Cliente</th><th>Ciudad</th><th>Segmento</th><th>Email</th>
+          <th class="num">Compras</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set colores = {'Persona natural': 'info', 'Pyme': 'warning', 'Corporativo': 'primary'} %}
+        {% for c in items %}
+        <tr>
+          <td>{{ c.id_cliente }}</td>
+          <td class="fw-medium">{{ c.nombre_cliente }}</td>
+          <td>{{ c.ciudad }}</td>
+          <td><span class="badge text-bg-{{ colores.get(c.segmento, 'secondary') }}">{{ c.segmento }}</span></td>
+          <td>{% if c.email %}<a href="mailto:{{ c.email }}">{{ c.email }}</a>{% endif %}</td>
+          <td class="num">{{ c.num_compras }}</td>
+          <td>{{ m.acciones(url_for('clientes.editar', id=c.id_cliente),
+                            url_for('clientes.eliminar', id=c.id_cliente),
+                            'el cliente ' ~ c.nombre_cliente) }}</td>
+        </tr>
+        {% else %}
+          {{ m.sin_registros(7) }}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

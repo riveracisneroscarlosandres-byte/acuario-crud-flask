@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Ventas{% endblock %}
+{% block content %}
+{{ m.encabezado('Ventas', 'receipt', url_for('ventas.crear'), items|length) }}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Vendedor</th>
+          <th class="num">Cant.</th><th class="num">Precio unit.</th><th class="num">Desc.</th>
+          <th class="num">Total</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in items %}
+        <tr>
+          <td>{{ v.id_venta }}</td>
+          <td class="text-nowrap">{{ v.fecha.strftime('%d/%m/%Y') }}</td>
+          <td>{{ v.nombre_cliente }}</td>
+          <td>{{ v.nombre_producto }}</td>
+          <td>{{ v.nombre_vendedor }}</td>
+          <td class="num">{{ v.cantidad }}</td>
+          <td class="num">{{ v.precio_unitario|pesos }}</td>
+          <td class="num">{{ (v.descuento * 100)|round|int }} %</td>
+          <td class="num fw-semibold">{{ v.total|pesos }}</td>
+          <td>{{ m.acciones(url_for('ventas.editar', id=v.id_venta),
+                            url_for('ventas.eliminar', id=v.id_venta),
+                            'la venta #' ~ v.id_venta) }}</td>
+        </tr>
+        {% else %}
+          {{ m.sin_registros(10) }}
+        {% endfor %}
+      </tbody>
+      {% if items %}
+      <tfoot>
+        <tr class="table-light">
+          <th colspan="8" class="num">Total general</th>
+          <th class="num">{{ items|sum(attribute='total')|pesos }}</th>
+          <th></th>
+        </tr>
+      </tfoot>
+      {% endif %}
+    </table>
+  </div>
+</div>
+{% endblock %}

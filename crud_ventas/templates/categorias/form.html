@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ titulo }}</h1>
+<div class="card"><div class="card-body">
+  <form method="post" novalidate>
+    <div class="mb-3">
+      <label for="nombre_categoria" class="form-label">Nombre *</label>
+      <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria"
+             maxlength="60" required value="{{ item.nombre_categoria or '' }}">
+    </div>
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+                maxlength="200">{{ item.descripcion or '' }}</textarea>
+    </div>
+    {{ m.botones_form(url_for('categorias.listar')) }}
+  </form>
+</div></div>
+{% endblock %}

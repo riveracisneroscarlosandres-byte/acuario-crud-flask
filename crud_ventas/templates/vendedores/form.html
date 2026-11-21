@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ titulo }}</h1>
+<div class="card"><div class="card-body">
+  <form method="post" novalidate>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="nombre_vendedor" class="form-label">Nombre del vendedor *</label>
+        <input type="text" class="form-control" id="nombre_vendedor" name="nombre_vendedor"
+               maxlength="100" required value="{{ item.nombre_vendedor or '' }}">
+      </div>
+      <div class="col-md-3">
+        <label for="zona" class="form-label">Zona *</label>
+        <select class="form-select" id="zona" name="zona" required>
+          <option value="">Seleccione…</option>
+          {% for z in zonas %}
+            <option value="{{ z }}" {{ 'selected' if item.zona == z }}>{{ z }}</option>
+          {% endfor %}
+          {% if item.zona and item.zona not in zonas %}
+            <option value="{{ item.zona }}" selected>{{ item.zona }}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="meta_mensual" class="form-label">Meta mensual (COP) *</label>
+        <input type="number" class="form-control" id="meta_mensual" name="meta_mensual"
+               min="0" step="0.01" required
+               value="{{ item.meta_mensual if item.meta_mensual is not none }}">
+      </div>
+    </div>
+    {{ m.botones_form(url_for('vendedores.listar')) }}
+  </form>
+</div></div>
+{% endblock %}

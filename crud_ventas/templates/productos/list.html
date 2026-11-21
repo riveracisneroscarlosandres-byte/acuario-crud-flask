@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Productos{% endblock %}
+{% block content %}
+{{ m.encabezado('Productos', 'box-seam', url_for('productos.crear'), items|length) }}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Producto</th><th>Categoría</th>
+          <th class="num">Precio lista</th><th class="num">Stock</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in items %}
+        <tr>
+          <td>{{ p.id_producto }}</td>
+          <td class="fw-medium">{{ p.nombre_producto }}</td>
+          <td><span class="badge text-bg-light border">{{ p.nombre_categoria }}</span></td>
+          <td class="num">{{ p.precio_lista|pesos }}</td>
+          <td class="num">
+            {% if p.stock == 0 %}<span class="badge text-bg-danger">Agotado</span>
+            {% else %}{{ p.stock }}{% endif %}
+          </td>
+          <td>{{ m.acciones(url_for('productos.editar', id=p.id_producto),
+                            url_for('productos.eliminar', id=p.id_producto),
+                            'el producto ' ~ p.nombre_producto) }}</td>
+        </tr>
+        {% else %}
+          {{ m.sin_registros(6) }}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

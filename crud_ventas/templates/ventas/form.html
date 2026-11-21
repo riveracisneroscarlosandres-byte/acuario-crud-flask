@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ titulo }}</h1>
+<div class="card"><div class="card-body">
+  <form method="post" novalidate>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="fecha" class="form-label">Fecha *</label>
+        <input type="date" class="form-control" id="fecha" name="fecha" required
+               value="{{ item.fecha or '' }}">
+      </div>
+      <div class="col-md-8">
+        <label for="id_cliente" class="form-label">Cliente *</label>
+        <select class="form-select" id="id_cliente" name="id_cliente" required>
+          <option value="">Seleccione…</option>
+          {% for c in clientes %}
+            <option value="{{ c.id_cliente }}"
+              {{ 'selected' if item.id_cliente|string == c.id_cliente|string }}>
+              {{ c.nombre_cliente }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="id_producto" class="form-label">Producto *</label>
+        <select class="form-select" id="id_producto" name="id_producto" required>
+          <option value="">Seleccione…</option>
+          {% for p in productos %}
+            <option value="{{ p.id_producto }}" data-precio="{{ p.precio_lista }}"
+              {{ 'selected' if item.id_producto|string == p.id_producto|string }}>
+              {{ p.nombre_producto }} ({{ p.precio_lista|pesos }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="id_vendedor" class="form-label">Vendedor *</label>
+        <select class="form-select" id="id_vendedor" name="id_vendedor" required>
+          <option value="">Seleccione…</option>
+          {% for ve in vendedores %}
+            <option value="{{ ve.id_vendedor }}"
+              {{ 'selected' if item.id_vendedor|string == ve.id_vendedor|string }}>
+              {{ ve.nombre_vendedor }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="cantidad" class="form-label">Cantidad *</label>
+        <input type="number" class="form-control" id="cantidad" name="cantidad"
+               min="1" step="1" required value="{{ item.cantidad if item.cantidad is not none }}">
+      </div>
+      <div class="col-md-4">
+        <label for="precio_unitario" class="form-label">Precio unitario (COP) *</label>
+        <input type="number" class="form-control" id="precio_unitario" name="precio_unitario"
+               min="0.01" step="0.01" required
+               value="{{ item.precio_unitario if item.precio_unitario is not none }}">
+        <div class="form-text">Se llena con el precio de lista al elegir el producto.</div>
+      </div>
+      <div class="col-md-2">
+        <label for="descuento" class="form-label">Descuento (%)</label>
+        <input type="number" class="form-control" id="descuento" name="descuento"
+               min="0" max="100" step="1" required
+               value="{{ item.descuento if item.descuento is not none else 0 }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Total</label>
+        <div class="form-control-plaintext fs-5 fw-semibold" id="total">$ 0</div>
+      </div>
+    </div>
+    {{ m.botones_form(url_for('ventas.listar')) }}
+  </form>
+</div></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const producto = document.getElementById('id_producto');
+  const precio = document.getElementById('precio_unitario');
+  const cantidad = document.getElementById('cantidad');
+  const descuento = document.getElementById('descuento');
+  const total = document.getElementById('total');
+
+  function calcularTotal() {
+    const t = (parseFloat(cantidad.value) || 0) * (parseFloat(precio.value) || 0)
+              * (1 - (parseFloat(descuento.value) || 0) / 100);
+    total.textContent = '$ ' + Math.round(t).toLocaleString('es-CO');
+  }
+
+  // Al elegir un producto, se propone su precio de lista
+  producto.addEventListener('change', () => {
+    const opcion = producto.selectedOptions[0];
+    if (opcion && opcion.dataset.precio) precio.value = opcion.dataset.precio;
+    calcularTotal();
+  });
+  [precio, cantidad, descuento].forEach(el => el.addEventListener('input', calcularTotal));
+  calcularTotal();
+</script>
+{% endblock %}

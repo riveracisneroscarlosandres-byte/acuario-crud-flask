@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}Vendedores{% endblock %}
+{% block content %}
+{{ m.encabezado('Vendedores', 'person-badge', url_for('vendedores.crear'), items|length) }}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>ID</th><th>Vendedor</th><th>Zona</th><th class="num">Meta mensual</th>
+          <th class="num">Total vendido</th><th style="min-width:140px">Cumplimiento</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ve in items %}
+        {% set pct = (ve.total_vendido / ve.meta_mensual * 100) if ve.meta_mensual else 0 %}
+        <tr>
+          <td>{{ ve.id_vendedor }}</td>
+          <td class="fw-medium">{{ ve.nombre_vendedor }}</td>
+          <td>{{ ve.zona }}</td>
+          <td class="num">{{ ve.meta_mensual|pesos }}</td>
+          <td class="num">{{ ve.total_vendido|pesos }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div class="progress flex-grow-1" role="progressbar" aria-valuenow="{{ pct|round|int }}"
+                   aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar {{ 'bg-success' if pct >= 100 }}"
+                     style="width: {{ [pct, 100]|min }}%"></div>
+              </div>
+              <span class="small text-nowrap" style="min-width:3rem">{{ pct|round|int }} %</span>
+            </div>
+          </td>
+          <td>{{ m.acciones(url_for('vendedores.editar', id=ve.id_vendedor),
+                            url_for('vendedores.eliminar', id=ve.id_vendedor),
+                            'el vendedor ' ~ ve.nombre_vendedor) }}</td>
+        </tr>
+        {% else %}
+          {{ m.sin_registros(7) }}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<p class="small text-secondary mt-2">El cumplimiento compara el total vendido histórico con la meta mensual.</p>
+{% endblock %}
